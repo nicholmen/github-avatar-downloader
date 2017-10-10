@@ -1,3 +1,5 @@
+//Given a GitHub repository name and owner, download all the contributors' profile images and save them to a subdirectory, avatars/.
+
 var request = require('request');
 var fs = require('fs');
 console.log('Welcome to the GitHub Avatar Downloader!');
@@ -15,7 +17,7 @@ var requestURL = {
 function getRepoContributors(url, cb) {
   var userObject = {};
   request(requestURL, function (err, res, body) {
-    var data = JSON.parse(body);
+  var data = JSON.parse(body);
     if (!fs.existsSync('./avatars/')) {
       fs.mkdir("./avatars");
     }
@@ -23,8 +25,8 @@ function getRepoContributors(url, cb) {
       userObject.username = entry.login;
       userObject.avatar = entry.avatar_url;
       cb(userObject);
-    })
-  })
+    });
+  });
 
 }
 
@@ -32,10 +34,11 @@ function downloadImageByUrl(userObject) {
   request.get(userObject.avatar)
     .on('error', function (err) {
       throw err;
-    )
-    .pipe(fs.createWriteStream('./avatars/' + userObject.username + '.jpg'))
-    .on('finish', function (end) {
-      console.log('download finished')
     })
+    .pipe(fs.createWriteStream('./avatars/' + userObject.username + '.jpg'))
+
+    .on('finish', function (end) {
+      console.log('download finished');
+    });
 }
-getRepoContributors(requestURL, downloadImageByUrl)
+getRepoContributors(requestURL, downloadImageByUrl);
